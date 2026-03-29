@@ -1,24 +1,50 @@
-const F2S = "ix07LcoXO9jQRtGYr8h1HFU34gWvqmPkIzNEfab56CsDVyudAZoKWzx1ZkfMwTVmEeFrL0SJNb8C9dqO";
+import { 
+  signInWithPhoneNumber, 
+  RecaptchaVerifier 
+} from "firebase/auth";
+import { auth } from "./firebase";
 
-export const sendOTP = async (phone) => {
-  const otp = String(Math.floor(1000 + Math.random() * 9000));
-  localStorage.setItem('m_otp', otp);
-  
+/**
+ * Sends an OTP via Firebase Phone Auth
+ * @param {string} phone - The phone number (+91...)
+ * @param {string} containerId - The ID of the div for the invisible reCAPTCHA
+ */
+export const sendFirebaseOTP = async (phone, containerId) => {
   try {
-    const r = await fetch(`https://www.fast2sms.com/dev/bulkV2?authorization=${F2S}&route=otp&variables_values=${otp}&flash=0&numbers=${phone}`);
-    const d = await r.json();
-    if (d.return === true) {
-      return { success: true, otp };
-    }
-    return { success: false, otp, error: d.message };
-  } catch (e) {
-    return { success: false, otp, error: 'Network error demo mode' };
+    // 1. Initialize ReCAPTCHA
+    const recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
+      size: 'invisible',
+      callback: (response) => {
+        // reCAPTCHA solved, allow signInWithPhoneNumber.
+      }
+    });
+
+    // 2. Request OTP
+    const confirmationResult = await signInWithPhoneNumber(auth, phone, recaptchaVerifier);
+    
+    // 3. Store the result globally (or handle via state/navigation)
+    window.confirmationResult = confirmationResult;
+    
+    return { success: true };
+  } catch (error) {
+    console.error("Firebase Auth Error:", error);
+    return { success: false, error: error.message };
   }
 };
 
-export const verifyOTP = (enteredOtp) => {
-  const stored = localStorage.getItem('m_otp');
-  return { success: enteredOtp === stored };
+/**
+ * Verifies the OTP entered by the user
+ * @param {string} code - The 4 or 6 digit OTP code
+ */
+export const verifyFirebaseOTP = async (code) => {
+  try {
+    const result = await window.confirmationResult.confirm(code);
+    const user = result.user;
+    return { success: true, user };
+  } catch (error) {
+    console.error("OTP Verification Error:", error);
+    return { success: false, error: error.message };
+  }
 };
 
 export const OWNER_EMAIL = "shamikshaanandkumar@gmail.com";

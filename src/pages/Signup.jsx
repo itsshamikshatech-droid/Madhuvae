@@ -45,7 +45,7 @@ export default function Signup() {
             <option>Just exploring</option>
           </select>
         </div>
-        <button className="btn btn-gold" onClick={() => navigate('/signup/community')}>Continue →</button>
+        <button className="btn btn-gold" onClick={() => navigate('/signup/community', { state: { step1: formData } })}>Continue →</button>
       </div>
     </div>
   );

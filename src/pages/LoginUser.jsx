@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { sendOTP } from '../services/auth';
+import { sendFirebaseOTP } from '../services/auth';
 
 export default function LoginUser() {
   const navigate = useNavigate();
@@ -9,25 +9,29 @@ export default function LoginUser() {
   const [msg, setMsg] = useState({ text: '', type: '' });
 
   const handleSendOTP = async () => {
-    const raw = phone.replace(/[\s\-+]/g, '');
-    const cleanPhone = raw.startsWith('91') ? raw.slice(2) : raw;
+    // 1. Clean the number (remove non-digits, leading 0, etc.)
+    const cleanPhone = phone.replace(/\D/g, '');
+    const finalPhone = cleanPhone.length === 12 && cleanPhone.startsWith('91') 
+      ? `+${cleanPhone}` 
+      : cleanPhone.length === 10 
+        ? `+91${cleanPhone}` 
+        : cleanPhone;
 
-    if (!cleanPhone || cleanPhone.length !== 10 || !/^\d+$/.test(cleanPhone)) {
+    if (!/^\+91\d{10}$/.test(finalPhone)) {
       setMsg({ text: 'Please enter a valid 10-digit phone number.', type: 'nfe' });
       return;
     }
 
     setLoading(true);
-    setMsg({ text: 'Sending OTP via SMS…', type: 'nfi' });
+    setMsg({ text: '📱 Requesting OTP from Firebase...', type: 'nfi' });
 
     try {
-      const response = await sendOTP(cleanPhone);
+      const response = await sendFirebaseOTP(finalPhone, 'recaptcha-container');
       if (response.success) {
-        setMsg({ text: `✅ OTP sent to +91 ${cleanPhone}. Check your SMS.`, type: 'nfs' });
-        setTimeout(() => navigate('/otp', { state: { phone: cleanPhone } }), 600);
+        setMsg({ text: `✅ OTP sent to ${finalPhone}. Check your SMS.`, type: 'nfs' });
+        setTimeout(() => navigate('/login/otp', { state: { phone: finalPhone } }), 800);
       } else {
-        setMsg({ text: `Demo mode — OTP is ${response.otp}`, type: 'nfi' });
-        setTimeout(() => navigate('/otp', { state: { phone: cleanPhone } }), 1000);
+        setMsg({ text: `❌ ${response.error || 'Error sending OTP'}`, type: 'nfe' });
       }
     } catch (e) {
       setMsg({ text: 'Error sending OTP.', type: 'nfe' });
@@ -48,20 +52,31 @@ export default function LoginUser() {
           <label>Phone Number</label>
           <input 
             type="tel" 
-            placeholder="+91 98765 43210" 
-            maxLength="13" 
+            placeholder="98765 43210" 
+            maxLength="10" 
             value={phone} 
-            onChange={(e) => setPhone(e.target.value)} 
+            onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))} 
           />
         </div>
+        
         {msg.text && (
           <div id="u-msg" style={{ minHeight: 0 }}>
             <div className={`nf ${msg.type}`} style={{ marginBottom: '12px' }}>{msg.text}</div>
           </div>
         )}
-        <button className="btn btn-gold" disabled={loading} onClick={handleSendOTP}>
+
+        <button 
+          className="btn btn-gold" 
+          disabled={loading} 
+          onClick={handleSendOTP}
+          style={{ opacity: loading ? 0.7 : 1 }}
+        >
           {loading ? 'Sending…' : 'Send OTP →'}
         </button>
+
+        {/* Firebase Invisible ReCAPTCHA Container */}
+        <div id="recaptcha-container"></div>
+
         <div className="divf"></div>
         <p style={{ textAlign: 'center', fontSize: '13px', color: 'var(--hint)' }}>New to Madhuve?</p>
         <button className="btn btn-ghost" onClick={() => navigate('/signup')}>Create Account →</button>

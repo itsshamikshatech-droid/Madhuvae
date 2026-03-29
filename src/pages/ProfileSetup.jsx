@@ -1,12 +1,71 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { storage, auth } from '../services/firebase';
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { createProfile } from '../services/firestore';
 
 export default function ProfileSetup() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const allData = location.state || {};
 
-  const handleComplete = () => {
-    // Basic validation mock
-    navigate('/signup/pending');
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    age: '', height: '', education: '', occupation: '', city: '', about: '',
+    minAge: '', maxAge: '', prefCity: '', familyPhones: ''
+  });
+
+  const uploadFile = async (file, path) => {
+    if (!file) return null;
+    const storageRef = ref(storage, path);
+    const snapshot = await uploadBytes(storageRef, file);
+    return await getDownloadURL(snapshot.ref);
+  };
+
+  const handleComplete = async () => {
+    if (!formData.age || !formData.occupation || !formData.city) {
+      alert("Please fill in the required personal details.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const uid = auth.currentUser?.uid || `temp_${Date.now()}`;
+      
+      // 1. Upload Files
+      const photoUrl = await uploadFile(allData.step3?.photoFile, `profiles/${uid}/photo`);
+      const certUrl = await uploadFile(allData.step3?.certFile, `profiles/${uid}/certificate`);
+
+      // 2. Prepare Profile Data
+      const profile = {
+        uid,
+        name: allData.step1?.name,
+        phone: allData.step1?.phone || auth.currentUser?.phoneNumber,
+        email: allData.step1?.email,
+        role: allData.step1?.role,
+        timeline: allData.step1?.timeline,
+        ...allData.step2, // seemai, ooru, hatti, lineage
+        vElder: allData.step3?.vElder,
+        vPhone: allData.step3?.vPhone,
+        fElder: allData.step3?.fElder,
+        ...formData,
+        photoUrl,
+        certUrl,
+        status: 'pending', // Verification pending
+        verified: false,
+        createdAt: new Date().toISOString()
+      };
+
+      // 3. Save to Firestore
+      await createProfile(profile);
+
+      navigate('/signup/pending');
+    } catch (error) {
+      console.error("Signup error:", error);
+      alert("Registration failed: " + error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -18,19 +77,25 @@ export default function ProfileSetup() {
         <p className="sub">Step 4 of 4 — Personal details</p>
       </div>
       <div className="form-body">
+        {loading && (
+          <div className="nf nfi" style={{ marginBottom: '20px' }}>
+            ⌛ Finalizing your profile... Uploading documents to secure storage.
+          </div>
+        )}
+
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
           <div className="field" style={{ marginBottom: 0 }}>
             <label>Age</label>
-            <input type="number" placeholder="25" min="18" max="60" />
+            <input type="number" placeholder="25" min="18" max="60" value={formData.age} onChange={e => setFormData({...formData, age: e.target.value})} />
           </div>
           <div className="field" style={{ marginBottom: 0 }}>
             <label>Height (cm)</label>
-            <input type="number" placeholder="165" />
+            <input type="number" placeholder="165" value={formData.height} onChange={e => setFormData({...formData, height: e.target.value})} />
           </div>
         </div>
         <div className="field" style={{ marginTop: '14px' }}>
           <label>Education</label>
-          <select>
+          <select value={formData.education} onChange={e => setFormData({...formData, education: e.target.value})}>
             <option value="">Select</option>
             <option>High School</option>
             <option>Diploma</option>
@@ -42,36 +107,45 @@ export default function ProfileSetup() {
         </div>
         <div className="field">
           <label>Occupation</label>
-          <input type="text" placeholder="e.g. Teacher, Engineer, Farmer" />
+          <input type="text" placeholder="e.g. Teacher, Engineer, Farmer" value={formData.occupation} onChange={e => setFormData({...formData, occupation: e.target.value})} />
         </div>
         <div className="field">
           <label>Current City</label>
-          <input type="text" placeholder="e.g. Coimbatore, Bengaluru, Chennai" />
+          <input type="text" placeholder="e.g. Coimbatore, Bengaluru, Chennai" value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} />
         </div>
         <div className="field">
           <label>About Me</label>
-          <textarea placeholder="A thoughtful note about yourself that families will read. Be genuine."></textarea>
+          <textarea placeholder="A thoughtful note about yourself that families will read. Be genuine." value={formData.about} onChange={e => setFormData({...formData, about: e.target.value})}></textarea>
         </div>
+        
         <div className="section-label">Match Preferences</div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
           <div className="field" style={{ marginBottom: 0 }}>
             <label>Min Age</label>
-            <input type="number" placeholder="22" />
+            <input type="number" placeholder="22" value={formData.minAge} onChange={e => setFormData({...formData, minAge: e.target.value})} />
           </div>
           <div className="field" style={{ marginBottom: 0 }}>
             <label>Max Age</label>
-            <input type="number" placeholder="32" />
+            <input type="number" placeholder="32" value={formData.maxAge} onChange={e => setFormData({...formData, maxAge: e.target.value})} />
           </div>
         </div>
         <div className="field" style={{ marginTop: '14px' }}>
           <label>Preferred City</label>
-          <input type="text" placeholder="Any city, or specify your preference" />
+          <input type="text" placeholder="Any city, or specify your preference" value={formData.prefCity} onChange={e => setFormData({...formData, prefCity: e.target.value})} />
         </div>
         <div className="field">
           <label>Family Members' Phones (optional)</label>
-          <input type="text" placeholder="Comma-separated phone numbers — notified of requests" />
+          <input type="text" placeholder="Comma-separated phone numbers — notified of requests" value={formData.familyPhones} onChange={e => setFormData({...formData, familyPhones: e.target.value})} />
         </div>
-        <button className="btn btn-gold" style={{ marginTop: '6px' }} onClick={handleComplete}>Complete Registration →</button>
+        
+        <button 
+          className="btn btn-gold" 
+          style={{ marginTop: '6px', opacity: loading ? 0.7 : 1 }} 
+          onClick={handleComplete}
+          disabled={loading}
+        >
+          {loading ? 'Finalizing Profile...' : 'Complete Registration →'}
+        </button>
       </div>
     </div>
   );

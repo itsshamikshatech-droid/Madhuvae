@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const DATA = {
   "Thodha Naadu": {"Kallatti_Ooru": ["Kallatti", "Sholur", "Mynale", "Melur", "Hosa Hatti", "Osa Hatti", "Konagatti", "Kagguchi", "Hullathi", "Uyilatti", "Thambatti", "Kambatti", "Ajjoor", "Alattane", "Masickal", "Davane", "Beragallu", "Ullupatti", "Bekkodu", "Bendatti", "Honnadale", "Omeyaratti", "Jakkalorai", "Thummanada", "Kappachi", "Melatti", "Nadu Hatti"]},
@@ -10,6 +10,9 @@ const DATA = {
 
 export default function Community() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const step1 = location.state?.step1 || {};
+
   const [seemai, setSeemai] = useState('');
   const [ooru, setOoru] = useState('');
   const [hatti, setHatti] = useState('');
@@ -17,6 +20,19 @@ export default function Community() {
 
   const availableOorus = seemai ? Object.keys(DATA[seemai] || {}) : [];
   const availableHattis = ooru ? (DATA[seemai]?.[ooru] || []) : [];
+
+  const handleNext = () => {
+    if (!seemai || !ooru || !hatti) {
+      alert("Please select your Seemai, Ooru, and Hatti.");
+      return;
+    }
+    navigate('/signup/upload', { 
+      state: { 
+        ...location.state, 
+        step2: { seemai, ooru, hatti, lineage } 
+      } 
+    });
+  };
 
   return (
     <div className="sc on" id="s-community">
@@ -56,7 +72,7 @@ export default function Community() {
           <label>Lineage / Family Line Name</label>
           <input type="text" placeholder="Ask your elders if unsure" value={lineage} onChange={e => setLineage(e.target.value)} />
         </div>
-        <button className="btn btn-gold" onClick={() => navigate('/signup/upload')}>Continue →</button>
+        <button className="btn btn-gold" onClick={handleNext}>Continue →</button>
       </div>
     </div>
   );

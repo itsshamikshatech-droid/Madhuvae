@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function UploadDocs() {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [photo, setPhoto] = useState(null);
   const [cert, setCert] = useState(null);
+  const [elderRef, setElderRef] = useState({ vElder: '', vPhone: '', fElder: '' });
 
   const handlePhotoPreview = (e) => {
     const file = e.target.files[0];
@@ -25,7 +28,16 @@ export default function UploadDocs() {
       alert('Please upload your profile photo. It is required.');
       return;
     }
-    navigate('/signup/profile');
+    navigate('/signup/profile', {
+      state: {
+        ...location.state,
+        step3: {
+          photoFile: photo.file,
+          certFile: cert,
+          ...elderRef
+        }
+      }
+    });
   };
 
   return (
@@ -77,17 +89,17 @@ export default function UploadDocs() {
         <div className="section-label" style={{ marginTop: '18px' }}>Village Elder Reference</div>
         <div className="field">
           <label>Elder's Name</label>
-          <input type="text" placeholder="Name of the village elder" />
+          <input type="text" placeholder="Name of the village elder" value={elderRef.vElder} onChange={e => setElderRef({...elderRef, vElder: e.target.value})} />
         </div>
         <div className="field">
           <label>Elder's Phone</label>
-          <input type="tel" placeholder="+91 XXXXX XXXXX" />
+          <input type="tel" placeholder="+91 XXXXX XXXXX" value={elderRef.vPhone} onChange={e => setElderRef({...elderRef, vPhone: e.target.value})} />
         </div>
 
         <div className="section-label">Family Elder Reference</div>
         <div className="field">
           <label>Family Elder's Name</label>
-          <input type="text" placeholder="Name of family elder" />
+          <input type="text" placeholder="Name of family elder" value={elderRef.fElder} onChange={e => setElderRef({...elderRef, fElder: e.target.value})} />
         </div>
 
         <div className="nf nfw">After submitting, your status will be <strong>Verification Pending</strong>. You will see which admin has your application and can contact them.</div>
