@@ -20,27 +20,24 @@ body {
   color:var(--ink);
 }
 
-/* ── PHONE WRAPPER (desktop preview) ── */
-.outer{display:flex;align-items:center;justify-content:center;height:100vh;background:
-  radial-gradient(ellipse at 25% 25%,rgba(184,134,58,.15),transparent 50%),
-  radial-gradient(ellipse at 75% 75%,rgba(122,30,46,.1),transparent 50%),#EDE0C8;}
-
-.phone{
-  width:min(390px,100vw);
-  height:min(844px,100vh);
-  background:var(--surface);
-  border-radius:min(48px,0px);
-  box-shadow:var(--sh2),0 0 0 1.5px rgba(184,134,58,.35),inset 0 1px 0 rgba(255,255,255,.8);
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
-  position:relative;
+/* ── LAYOUT ── */
+.outer {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
 }
-@media(max-width:390px){.phone{border-radius:0;box-shadow:none;width:100vw;height:100vh;}}
-@media(min-width:391px){.outer{padding:20px;}}
 
-.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:100px;height:22px;background:var(--ink);border-radius:0 0 14px 14px;z-index:200;}
-.sbar{height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:11px;font-weight:600;color:var(--hint);flex-shrink:0;z-index:10;}
+.app-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  background: var(--surface);
+}
+
 .accent{height:3px;background:linear-gradient(90deg,var(--cr),var(--g1) 40%,var(--g3) 70%,var(--g1));flex-shrink:0;}
 
 /* Scrollable body */

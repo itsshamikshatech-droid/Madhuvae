@@ -21,32 +21,12 @@ import AdminPortal from './pages/AdminPortal';
 import OwnerPortal from './pages/OwnerPortal';
 import AddAdmin from './pages/AddAdmin';
 
-function PhoneEnvironment({ children }) {
-  const [time, setTime] = useState('9:41');
-
-  useEffect(() => {
-    const tick = () => {
-      const now = new Date();
-      setTime(now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0'));
-    };
-    tick();
-    const interval = setInterval(tick, 30000);
-    return () => clearInterval(interval);
-  }, []);
-
+function AppLayout({ children }) {
   return (
     <div className="outer">
-      <div className="phone">
-        <div className="notch"></div>
-        <div className="sbar">
-          <span id="clock">{time}</span>
-          <span>●●●</span>
-        </div>
+      <div className="app-container">
         <div className="accent"></div>
-        
-        {/* React Router will inject screens here */}
         {children}
-
       </div>
     </div>
   );
@@ -55,7 +35,7 @@ function PhoneEnvironment({ children }) {
 function App() {
   return (
     <Router>
-      <PhoneEnvironment>
+      <AppLayout>
         <Routes>
           <Route path="/" element={<Splash />} />
           <Route path="/role" element={<RoleSelect />} />
@@ -85,7 +65,7 @@ function App() {
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </PhoneEnvironment>
+      </AppLayout>
     </Router>
   );
 }
