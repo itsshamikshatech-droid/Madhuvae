@@ -98,7 +98,6 @@ export default function OTP() {
               key={i}
               ref={el => inputs.current[i] = el}
               className="obox"
-              style={{ width: '45px', height: '60px', fontSize: '24px' }}
               maxLength="1"
               inputMode="numeric"
               value={digit}

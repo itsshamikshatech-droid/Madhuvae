@@ -43,7 +43,7 @@ function App() {
           <Route path="/login/user" element={<LoginUser />} />
           <Route path="/login/admin" element={<LoginAdmin />} />
           <Route path="/login/owner" element={<LoginOwner />} />
-          <Route path="/otp" element={<OTP />} />
+          <Route path="/login/otp" element={<OTP />} />
           
           <Route path="/signup" element={<Signup />} />
           <Route path="/signup/community" element={<Community />} />

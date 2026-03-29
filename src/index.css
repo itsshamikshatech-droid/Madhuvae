@@ -14,7 +14,7 @@ html, body, #root, .outer {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden; /* App handles its own scrolling */
+  overflow: hidden; /* Prevent body scroll, use inner scroll */
 }
 
 body {
@@ -33,11 +33,11 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: hidden; /* Contain inner scrolls */
   position: relative;
   background: var(--surface);
   width: 100%;
-  max-width: none; /* Full monitor width */
+  max-width: none;
 }
 
 .accent{height:3px;background:linear-gradient(90deg,var(--cr),var(--g1) 40%,var(--g3) 70%,var(--g1));flex-shrink:0;}
@@ -51,9 +51,19 @@ body {
 .fs-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 28px;}
 
 /* Form screens: header + scrollable form */
-.form-header{padding:44px 28px 20px;flex-shrink:0;}
-.form-body{flex:1;overflow-y:auto;padding:0 28px 32px;-webkit-overflow-scrolling:touch;}
+.form-header{padding:40px 24px 16px;flex-shrink:0;}
+.form-body{
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 24px 40px;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+}
 .form-body::-webkit-scrollbar{display:none;}
+
+/* For pages that don't use form-body */
+.sc{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden;}
 
 /* ── TOP BAR ── */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 20px 10px;border-bottom:1px solid rgba(224,200,144,.4);flex-shrink:0;}
@@ -86,10 +96,22 @@ textarea{resize:none;height:90px;line-height:1.6;}
 input::placeholder,textarea::placeholder{color:var(--hint);opacity:.6;}
 
 /* ── OTP ── */
-.otp-row{display:flex;gap:12px;justify-content:center;margin:28px 0;}
-.obox{width:64px;height:72px;border:1.5px solid var(--border);border-radius:16px;
-  background:var(--card);text-align:center;font-size:28px;font-weight:700;
-  font-family:'Cormorant Garamond',serif;color:var(--g1);outline:none;transition:all .2s;}
+.otp-row{display:flex;gap:8px;justify-content:center;margin:24px 0;width:100%;}
+.obox{
+  width:14%;
+  aspect-ratio:3/4;
+  max-width:50px;
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  background:var(--card);
+  text-align:center;
+  font-size:22px;
+  font-weight:700;
+  font-family:'Cormorant Garamond',serif;
+  color:var(--g1);
+  outline:none;
+  transition:all .2s;
+}
 .obox:focus{border-color:var(--g1);box-shadow:0 0 0 4px rgba(184,134,58,.12);}
 
 /* ── BUTTONS ── */
