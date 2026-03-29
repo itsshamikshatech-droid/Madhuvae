@@ -53,10 +53,11 @@ export default function LoginUser() {
           <input 
             type="tel" 
             placeholder="98765 43210" 
-            maxLength="10" 
+            maxLength="16" 
             value={phone} 
-            onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))} 
+            onChange={(e) => setPhone(e.target.value)} 
           />
+          <div style={{ fontSize: '11px', color: 'var(--hint)', marginTop: '4px' }}>Example: 98765 43210 or +91...</div>
         </div>
         
         {msg.text && (
