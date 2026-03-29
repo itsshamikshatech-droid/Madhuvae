@@ -9,21 +9,21 @@
   --sh:0 2px 16px rgba(140,96,32,.12);--sh2:0 6px 32px rgba(140,96,32,.18);
 }
 
-html, body {
-  height:100%;
-  overflow:hidden;
+/* ── LAYOUT ── */
+html, body, #root, .outer {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* App handles its own scrolling */
 }
 
 body {
-  background:var(--bg);
-  font-family:'DM Sans',sans-serif;
-  color:var(--ink);
+  background: var(--bg);
+  font-family: 'DM Sans', sans-serif;
+  color: var(--ink);
 }
 
-/* ── LAYOUT ── */
 .outer {
-  height: 100vh;
-  width: 100vw;
   display: flex;
   flex-direction: column;
   background: var(--bg);
@@ -36,6 +36,8 @@ body {
   overflow: hidden;
   position: relative;
   background: var(--surface);
+  width: 100%;
+  max-width: none; /* Full monitor width */
 }
 
 .accent{height:3px;background:linear-gradient(90deg,var(--cr),var(--g1) 40%,var(--g3) 70%,var(--g1));flex-shrink:0;}
