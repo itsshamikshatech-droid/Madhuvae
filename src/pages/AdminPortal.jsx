@@ -113,7 +113,7 @@ export default function AdminPortal() {
                   <span className="chip ca">Pending</span>
                 </div>
                 
-                {u.photoUrl && (
+                {u.photoUrl ? (
                   <img src={u.photoUrl} alt="Profile" style={{ width: '100%', height: '220px', objectFit: 'cover', borderRadius: '12px', marginBottom: '12px' }} />
                 ) : (
                   <div className="nf nfe" style={{marginBottom: '12px'}}>No profile photo uploaded.</div>

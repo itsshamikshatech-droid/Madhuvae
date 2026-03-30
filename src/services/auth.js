@@ -14,7 +14,7 @@ export const sendFirebaseOTP = async (phone, containerId) => {
     // 1. Initialize ReCAPTCHA
     const recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
       size: 'invisible',
-      callback: (response) => {
+      callback: (_response) => {
         // reCAPTCHA solved, allow signInWithPhoneNumber.
       }
     });
