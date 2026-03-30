@@ -12,17 +12,19 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      setUser(firebaseUser);
-      
-      if (firebaseUser) {
-        // Fetch profile from Firestore
-        const userProfile = await getUserProfile(firebaseUser.uid);
-        setProfile(userProfile);
-      } else {
-        setProfile(null);
+      try {
+        setUser(firebaseUser);
+        if (firebaseUser) {
+          const userProfile = await getUserProfile(firebaseUser.uid);
+          setProfile(userProfile);
+        } else {
+          setProfile(null);
+        }
+      } catch (err) {
+        console.error("Auth state error:", err);
+      } finally {
+        setLoading(false);
       }
-      
-      setLoading(false);
     });
 
     return () => unsubscribe();

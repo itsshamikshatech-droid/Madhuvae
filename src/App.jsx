@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 
 // Pages
@@ -35,8 +35,13 @@ const GuestRoute = ({ children }) => {
   const { isAuthenticated, isProfileComplete, isVerified } = useAuth();
   
   if (isAuthenticated) {
-    if (!isProfileComplete) return <Navigate to="/signup/profile" replace />;
+    // If authenticated but no profile, start onboarding
+    if (!isProfileComplete) return <Navigate to="/signup/basics" replace />;
+    
+    // If profile done but not verified, show pending
     if (!isVerified) return <Navigate to="/signup/pending" replace />;
+    
+    // Default to dashboard
     return <Navigate to="/home" replace />;
   }
   
@@ -46,19 +51,18 @@ const GuestRoute = ({ children }) => {
 // Protects routes and handles profile-based redirection
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
   const { isAuthenticated, isProfileComplete, isVerified } = useAuth();
+  const location = useLocation();
   
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   
-  // Basic check for admin portal access
+  // Admin Portal check
   if (requireAdmin) return children;
 
-  const currentPath = window.location.pathname;
+  const currentPath = location.pathname;
 
-  // Force profile setup if missing (Start at Basics)
-  if (!isProfileComplete && currentPath !== '/signup/basics' && 
-      currentPath !== '/signup/community' && 
-      currentPath !== '/signup/upload' && 
-      currentPath !== '/signup/profile') {
+  // Force profile setup sequence if missing
+  if (!isProfileComplete && 
+      !['/signup/basics', '/signup/community', '/signup/upload', '/signup/profile'].includes(currentPath)) {
     return <Navigate to="/signup/basics" replace />;
   }
 
@@ -68,7 +72,7 @@ const ProtectedRoute = ({ children, requireAdmin = false }) => {
   }
 
   // If already verified, don't allow access to setup/pending pages
-  if (isVerified && (currentPath === '/signup/profile' || currentPath === '/signup/pending')) {
+  if (isVerified && ['/signup/basics', '/signup/community', '/signup/upload', '/signup/profile', '/signup/pending'].includes(currentPath)) {
     return <Navigate to="/home" replace />;
   }
 
@@ -93,13 +97,13 @@ function App() {
           <Route path="/signup/profile" element={<ProtectedRoute><ProfileSetup /></ProtectedRoute>} />
           <Route path="/signup/pending" element={<ProtectedRoute><Pending /></ProtectedRoute>} />
           
-          {/* Main App (Protected & Verified Only via check in ProtectedRoute) */}
+          {/* Main App (Protected) */}
           <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
           <Route path="/connections" element={<ProtectedRoute><Connections /></ProtectedRoute>} />
           <Route path="/journey" element={<ProtectedRoute><Journey /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><MyProfile /></ProtectedRoute>} />
           
-          {/* Admin Tools (Protected) */}
+          {/* Admin Tools */}
           <Route path="/admin" element={<ProtectedRoute requireAdmin={true}><AdminPortal /></ProtectedRoute>} />
           <Route path="/admin/add" element={<ProtectedRoute requireAdmin={true}><AddAdmin /></ProtectedRoute>} />
 
