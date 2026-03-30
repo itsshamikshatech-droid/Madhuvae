@@ -7,7 +7,7 @@ export default function AddAdmin() {
   return (
     <div className="sc on" id="s-add-admin">
       <div className="form-header">
-        <button className="back-btn" onClick={() => navigate('/owner')} style={{ marginBottom: '16px' }}>← Back</button>
+        <button className="back-btn" onClick={() => navigate('/admin')} style={{ marginBottom: '16px' }}>← Back</button>
         <div className="h2">Add Admin</div>
         <p className="sub">Create an admin account and assign their Seemai region</p>
       </div>

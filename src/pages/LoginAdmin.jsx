@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function LoginAdmin() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [msg, setMsg] = useState({ text: '', type: '' });
@@ -27,12 +29,12 @@ export default function LoginAdmin() {
   return (
     <div className="sc on" id="s-login-admin">
       <div className="form-header">
-        <button className="back-btn" onClick={() => navigate('/role')} style={{ marginBottom: '16px' }}>← Back</button>
-        <div className="h2">Admin Login</div>
-        <p className="sub">Use the credentials provided by the Madhuve Owner</p>
+        <button className="back-btn" onClick={() => navigate('/login')} style={{ marginBottom: '16px' }}>{t('back')}</button>
+        <div className="h2">{t('admin_login')}</div>
+        <p className="sub">Use the credentials provided by the Madhuve Team</p>
       </div>
       <div className="form-body">
-        <div className="nf nfi">Admin accounts are created exclusively by the Madhuve Owner. Contact them if you need access.</div>
+        <div className="nf nfi">Admin accounts are created exclusively by the Madhuve system. Contact the administrator if you need access.</div>
         <div className="field">
           <label>Phone Number / Email</label>
           <input type="text" placeholder="Your admin ID" value={id} onChange={e => setId(e.target.value)} />

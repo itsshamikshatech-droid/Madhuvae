@@ -3,11 +3,8 @@ import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate } from 'r
 
 // Pages
 import Splash from './pages/Splash';
-import RoleSelect from './pages/RoleSelect';
 import LoginUser from './pages/LoginUser';
 import LoginAdmin from './pages/LoginAdmin';
-import LoginOwner from './pages/LoginOwner';
-import OTP from './pages/OTP';
 import Signup from './pages/Signup';
 import Community from './pages/Community';
 import UploadDocs from './pages/UploadDocs';
@@ -18,7 +15,6 @@ import Connections from './pages/Connections';
 import Journey from './pages/Journey';
 import MyProfile from './pages/MyProfile';
 import AdminPortal from './pages/AdminPortal';
-import OwnerPortal from './pages/OwnerPortal';
 import AddAdmin from './pages/AddAdmin';
 
 function AppLayout({ children }) {
@@ -38,12 +34,8 @@ function App() {
       <AppLayout>
         <Routes>
           <Route path="/" element={<Splash />} />
-          <Route path="/role" element={<RoleSelect />} />
-          
-          <Route path="/login/user" element={<LoginUser />} />
+          <Route path="/login" element={<LoginUser />} />
           <Route path="/login/admin" element={<LoginAdmin />} />
-          <Route path="/login/owner" element={<LoginOwner />} />
-          <Route path="/login/otp" element={<OTP />} />
           
           <Route path="/signup" element={<Signup />} />
           <Route path="/signup/community" element={<Community />} />
@@ -59,8 +51,7 @@ function App() {
           
           {/* Portals */}
           <Route path="/admin" element={<AdminPortal />} />
-          <Route path="/owner" element={<OwnerPortal />} />
-          <Route path="/owner/add-admin" element={<AddAdmin />} />
+          <Route path="/admin/add" element={<AddAdmin />} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />

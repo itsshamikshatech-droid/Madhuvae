@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Signup() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({ name: '', phone: '', email: '', role: '', timeline: '' });
 
   return (
     <div className="sc on" id="s-signup">
       <div className="form-header">
-        <button className="back-btn" onClick={() => navigate('/login/user')} style={{ marginBottom: '16px' }}>← Back</button>
+        <button className="back-btn" onClick={() => navigate('/login')} style={{ marginBottom: '16px' }}>{t('back')}</button>
         <div className="pbar" style={{ width: '25%' }}></div>
         <div className="h2">Create Account</div>
         <p className="sub">Step 1 of 4 — Your Details</p>

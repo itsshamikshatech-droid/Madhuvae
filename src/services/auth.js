@@ -1,6 +1,9 @@
 import { 
   signInWithPhoneNumber, 
-  RecaptchaVerifier 
+  RecaptchaVerifier,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut
 } from "firebase/auth";
 import { auth } from "./firebase";
 
@@ -47,5 +50,22 @@ export const verifyFirebaseOTP = async (code) => {
   }
 };
 
-export const OWNER_EMAIL = "shamikshaanandkumar@gmail.com";
-export const OWNER_PASS  = "Shamu@270108";
+export const signInWithGoogle = async () => {
+  try {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    return { success: true, user: result.user };
+  } catch (error) {
+    console.error("Google Auth Error:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const logoutUser = async () => {
+  try {
+    await signOut(auth);
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};

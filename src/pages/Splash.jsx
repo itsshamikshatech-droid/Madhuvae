@@ -1,8 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Splash() {
   const navigate = useNavigate();
+  const { language, setLanguage, t } = useLanguage();
 
   return (
     <div className="sc on" id="s-splash">
@@ -32,21 +34,31 @@ export default function Splash() {
         </div>
         <div className="fu fu2" style={{ textAlign: 'center', marginBottom: '6px' }}>
           <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '48px', fontWeight: 700, color: 'var(--g1)', letterSpacing: '.05em', lineHeight: 1 }}>Madhuve</div>
-          <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '.2em', textTransform: 'uppercase', color: 'var(--hint)', marginTop: '5px' }}>Baduga Community Matrimony</div>
+          <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '.2em', textTransform: 'uppercase', color: 'var(--hint)', marginTop: '5px' }}>{t('community_subtitle')}</div>
         </div>
         <div className="div-c fu fu3" style={{ margin: '10px auto 14px' }}></div>
         <div className="fu fu3" style={{ textAlign: 'center', marginBottom: '18px' }}>
-          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '17px', color: 'var(--cr)', letterSpacing: '.07em' }}>✦ Hethaya Nera ✦</div>
-          <div style={{ fontFamily: "'Noto Sans Tamil', sans-serif", fontSize: '12.5px', color: 'var(--hint)', marginTop: '4px' }}>Our Ancestral Blessing</div>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '17px', color: 'var(--cr)', letterSpacing: '.07em' }}>{t('ancestral_title')}</div>
+          <div style={{ fontFamily: "'Noto Sans Tamil', sans-serif", fontSize: '12.5px', color: 'var(--hint)', marginTop: '4px' }}>{t('ancestral_subtitle')}</div>
         </div>
         <div className="fu fu4" style={{ background: 'rgba(184,134,58,.07)', border: '1px solid rgba(184,134,58,.18)', borderRadius: '18px', padding: '16px 20px', textAlign: 'center', marginBottom: '22px', width: '100%' }}>
-          <p style={{ fontSize: '13.5px', color: 'var(--muted)', lineHeight: 1.7 }}>A sacred, private space for the Baduga community — where tradition meets dignity in finding a life partner.</p>
+          <p style={{ fontSize: '13.5px', color: 'var(--muted)', lineHeight: 1.7 }}>{t('splash_desc')}</p>
         </div>
         <div className="ltog fu fu5" style={{ marginBottom: '22px' }}>
-          <button className="lbtn on">English</button>
-          <button className="lbtn">தமிழ்</button>
+          <button 
+            className={`lbtn ${language === 'en' ? 'on' : ''}`} 
+            onClick={() => setLanguage('en')}
+          >
+            English
+          </button>
+          <button 
+            className={`lbtn ${language === 'ta' ? 'on' : ''}`} 
+            onClick={() => setLanguage('ta')}
+          >
+            தமிழ்
+          </button>
         </div>
-        <button className="btn btn-gold fu fu6" onClick={() => navigate('/role')}>Enter Madhuve →</button>
+        <button className="btn btn-gold fu fu6" onClick={() => navigate('/login/user')}>{t('enter_btn')}</button>
       </div>
     </div>
   );
