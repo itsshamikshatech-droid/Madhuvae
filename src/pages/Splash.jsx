@@ -44,7 +44,7 @@ export default function Splash() {
         <div className="fu fu4" style={{ background: 'rgba(184,134,58,.07)', border: '1px solid rgba(184,134,58,.18)', borderRadius: '18px', padding: '16px 20px', textAlign: 'center', marginBottom: '22px', width: '100%' }}>
           <p style={{ fontSize: '13.5px', color: 'var(--muted)', lineHeight: 1.7 }}>{t('splash_desc')}</p>
         </div>
-        <div className="ltog fu fu5" style={{ marginBottom: '22px' }}>
+        <div className="ltog fu fu4">
           <button 
             className={`lbtn ${language === 'en' ? 'on' : ''}`} 
             onClick={() => setLanguage('en')}
@@ -58,7 +58,7 @@ export default function Splash() {
             தமிழ்
           </button>
         </div>
-        <button className="btn btn-gold fu fu6" onClick={() => navigate('/login/user')}>{t('enter_btn')}</button>
+        <button className="btn btn-gold fu fu5" onClick={() => navigate('/login')}>{t('enter_btn')}</button>
       </div>
     </div>
   );
