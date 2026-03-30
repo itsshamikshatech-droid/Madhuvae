@@ -3,7 +3,9 @@ import {
   RecaptchaVerifier,
   GoogleAuthProvider,
   signInWithPopup,
-  signOut
+  signOut,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword
 } from "firebase/auth";
 import { auth } from "./firebase";
 
@@ -46,6 +48,26 @@ export const verifyFirebaseOTP = async (code) => {
     return { success: true, user };
   } catch (error) {
     console.error("OTP Verification Error:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const signUpWithEmail = async (email, password) => {
+  try {
+    const result = await createUserWithEmailAndPassword(auth, email, password);
+    return { success: true, user: result.user };
+  } catch (error) {
+    console.error("Email Signup Error:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const signInWithEmail = async (email, password) => {
+  try {
+    const result = await signInWithEmailAndPassword(auth, email, password);
+    return { success: true, user: result.user };
+  } catch (error) {
+    console.error("Email Login Error:", error);
     return { success: false, error: error.message };
   }
 };

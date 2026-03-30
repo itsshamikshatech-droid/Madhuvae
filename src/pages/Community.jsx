@@ -37,7 +37,7 @@ export default function Community() {
   return (
     <div className="sc on" id="s-community">
       <div className="form-header">
-        <button className="back-btn" onClick={() => navigate('/signup')} style={{ marginBottom: '16px' }}>← Back</button>
+        <button className="back-btn" onClick={() => navigate('/signup/basics')} style={{ marginBottom: '16px' }}>← Back</button>
         <div className="pbar" style={{ width: '50%' }}></div>
         <div className="h2">Community Identity</div>
         <p className="sub">Step 2 of 4 — Your Baduga details</p>

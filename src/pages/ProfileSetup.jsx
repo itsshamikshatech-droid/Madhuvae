@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { storage, auth } from '../services/firebase';
+import { storage } from '../services/firebase';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { createProfile } from '../services/firestore';
+import { useAuth } from '../context/AuthContext';
 
 export default function ProfileSetup() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
   const allData = location.state || {};
 
   const [loading, setLoading] = useState(false);
@@ -28,30 +30,36 @@ export default function ProfileSetup() {
       return;
     }
 
+    if (!user) {
+      alert("Authentication session lost. Please log in again.");
+      navigate('/login');
+      return;
+    }
+
     setLoading(true);
     try {
-      const uid = auth.currentUser?.uid || `temp_${Date.now()}`;
+      const uid = user.uid;
       
-      // 1. Upload Files
+      // 1. Upload Files from Step 3
       const photoUrl = await uploadFile(allData.step3?.photoFile, `profiles/${uid}/photo`);
       const certUrl = await uploadFile(allData.step3?.certFile, `profiles/${uid}/certificate`);
 
-      // 2. Prepare Profile Data
+      // 2. Prepare Final Unified Profile Data
       const profile = {
         uid,
         name: allData.step1?.name,
-        phone: allData.step1?.phone || auth.currentUser?.phoneNumber,
-        email: allData.step1?.email,
+        phone: allData.step1?.phone,
+        email: user.email,
         role: allData.step1?.role,
         timeline: allData.step1?.timeline,
-        ...allData.step2, // seemai, ooru, hatti, lineage
-        vElder: allData.step3?.vElder,
+        ...allData.step2, // seemai, ooru, hatti, lineage from Step 2
+        vElder: allData.step3?.vElder, // from Step 3
         vPhone: allData.step3?.vPhone,
         fElder: allData.step3?.fElder,
-        ...formData,
+        ...formData, // age, height, education, occupation, city, etc. from Step 4
         photoUrl,
         certUrl,
-        status: 'pending', // Verification pending
+        status: 'pending',
         verified: false,
         createdAt: new Date().toISOString()
       };
@@ -59,10 +67,11 @@ export default function ProfileSetup() {
       // 3. Save to Firestore
       await createProfile(profile);
 
+      // Successfully submitted - redirect to the pending/waiting area
       navigate('/signup/pending');
     } catch (error) {
-      console.error("Signup error:", error);
-      alert("Registration failed: " + error.message);
+      console.error("Profile submission error:", error);
+      alert("Failed to save profile: " + error.message);
     } finally {
       setLoading(false);
     }
