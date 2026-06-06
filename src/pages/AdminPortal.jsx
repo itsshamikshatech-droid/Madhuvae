@@ -113,7 +113,7 @@ export default function AdminPortal() {
                 <span className="chip" style={{ marginLeft: 'auto', background: 'var(--gpale)', color: 'var(--warn)' }}>New</span>
               </div>
               
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '16px' }}>
+              <div className="review-media-grid">
                 {u.photoUrl && (
                   <div style={{ textAlign: 'center' }}>
                     <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--hint)', marginBottom: '4px' }}>Profile Photo</div>

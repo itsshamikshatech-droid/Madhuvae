@@ -92,7 +92,7 @@ export default function ProfileSetup() {
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+        <div className="form-grid two-col">
           <div className="field" style={{ marginBottom: 0 }}>
             <label>Age</label>
             <input type="number" placeholder="25" min="18" max="60" value={formData.age} onChange={e => setFormData({...formData, age: e.target.value})} />
@@ -128,7 +128,7 @@ export default function ProfileSetup() {
         </div>
         
         <div className="section-label">Match Preferences</div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+        <div className="form-grid two-col">
           <div className="field" style={{ marginBottom: 0 }}>
             <label>Min Age</label>
             <input type="number" placeholder="22" value={formData.minAge} onChange={e => setFormData({...formData, minAge: e.target.value})} />

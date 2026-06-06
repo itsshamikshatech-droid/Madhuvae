@@ -8,7 +8,7 @@ const translations = {
     ancestral_title: "✦ Hethaya Nera ✦",
     ancestral_subtitle: "Our Ancestral Blessing",
     splash_desc: "A sacred, private space for the Baduga community — where tradition meets dignity in finding a life partner.",
-    enter_btn: "Enter Madhuve →",
+    enter_btn: "Enter",
     login_title: "Login",
     login_google: "Sign in with Google",
     no_account: "New user? Sign up",

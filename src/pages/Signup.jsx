@@ -28,7 +28,7 @@ export default function Signup() {
     const res = await signUpWithEmail(email, password);
     if (res.success) {
       setShowSuccess(true);
-      setTimeout(() => navigate('/login'), 3000);
+      setTimeout(() => navigate('/signup/basics', { replace: true }), 1200);
     } else {
       setError(res.error);
       setLoading(false);
@@ -40,7 +40,7 @@ export default function Signup() {
     const res = await signInWithGoogle();
     if (res.success) {
       setShowSuccess(true);
-      setTimeout(() => navigate('/login'), 2000);
+      setTimeout(() => navigate('/signup/basics', { replace: true }), 1200);
     } else {
       setError(res.error);
       setLoading(false);
@@ -54,8 +54,8 @@ export default function Signup() {
           <div style={{ fontSize: '64px', marginBottom: '24px' }}>🎊</div>
           <div className="h2">Thank You for Joining!</div>
           <p className="sub" style={{ fontSize: '16px' }}>
-            Your account has been created successfully. 
-            We are redirecting you to the login page to start your journey.
+            Your account has been created successfully.
+            We are taking you to the first profile step.
           </p>
           <div className="nf nfs" style={{ marginTop: '24px' }}>
             Redirecting in a moment...
@@ -96,7 +96,7 @@ export default function Signup() {
           <div style={{ flex: 1, height: '1px', background: 'var(--border)', opacity: 0.4 }}></div>
         </div>
 
-        <button className="btn btn-outline" style={{ display: 'flex', gap: '10px' }} onClick={handleGoogleSignup} disabled={loading}>
+        <button className="btn btn-outline" type="button" style={{ display: 'flex', gap: '10px' }} onClick={handleGoogleSignup} disabled={loading}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
             <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
